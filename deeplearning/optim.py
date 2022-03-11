@@ -66,7 +66,8 @@ def sgd_momentum(w, dw, config=None):
     # the updated value in the next_w variable. You should also use and update  #
     # the velocity v.                                                           #
     #############################################################################
-    pass
+    v = dw + (config['momentum']*v)
+    next_w = w - (config['learning_rate'] * v)
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
@@ -99,7 +100,8 @@ def rmsprop(x, dx, config=None):
     # in the next_x variable. Don't forget to update cache value stored in      #
     # config['cache'] and to use the epsilon scalar to avoid dividing by zero.  #
     #############################################################################
-    pass
+    config['cache'] = (config['cache']*config['decay_rate']) + ((1-config['decay_rate'])*(dx**2))
+    next_x = x - config['learning_rate']*(dx/((config['cache']**(0.5)) + config['epsilon']))
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
@@ -136,7 +138,14 @@ def adam(x, dx, config=None):
     # the next_x variable. Don't forget to update the m, v, and t variables     #
     # stored in config and to use the epsilon scalar to avoid dividing by zero. #
     #############################################################################
-    pass
+    config['t'] += 1
+    config['m'] = ((1 - config['beta1'])*dx) + (config['beta1']*config['m'])
+    config['v'] = ((1 - config['beta2'])*(dx**2)) + (config['beta2']*config['v'])
+    m = config['m']/(1-(config['beta1']**config['t']))
+    v = config['v']/(1-(config['beta2']**config['t']))
+    g = m/((v**0.5)+config['epsilon'])
+    next_x = x - (config['learning_rate']*g)
+
     #############################################################################
     #                             END OF YOUR CODE                              #
     #############################################################################
